@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
+import { NextIntlClientProvider } from "next-intl";
 
 const roboto = Roboto({
     variable: "--font-roboto",
@@ -22,7 +23,9 @@ export default function RootLayout({
             lang="en"
             className={`${roboto.variable} ${roboto.variable} h-full antialiased`}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body className="min-h-full flex flex-col">
+                <NextIntlClientProvider>{children}</NextIntlClientProvider>
+            </body>
         </html>
     );
 }
