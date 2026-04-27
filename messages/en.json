@@ -1,5 +1,12 @@
 {
-    "HomePage": {
-        "title": "Hello world!"
+    "relicHunting": {
+        "filter": {
+            "all": "All Relics",
+            "lith": "Lith Relics",
+            "meso": "Meso Relics",
+            "neo": "Neo Relics",
+            "axi": "Axi Relics",
+            "requiem": "Requiem Relics"
+        }
     }
 }
