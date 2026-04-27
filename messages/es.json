@@ -1,0 +1,18 @@
+{
+    "relicHunting": {
+        "filter": {
+            "all": "Todas las Reliquias",
+            "lith": "Reliquias Lith",
+            "meso": "Reliquias Meso",
+            "neo": "Reliquias Neo",
+            "axi": "Reliquias Axi",
+            "requiem": "Reliquias Requiem"
+        }
+    },
+    "login": {
+        "socialLogins": {
+            "google": "Iniciar sesión con Google",
+            "discord": "Iniciar sesión con Discord"
+        }
+    }
+}

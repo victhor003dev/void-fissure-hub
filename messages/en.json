@@ -8,5 +8,11 @@
             "axi": "Axi Relics",
             "requiem": "Requiem Relics"
         }
+    },
+    "login": {
+        "socialLogins": {
+            "google": "Sign in with Google",
+            "discord": "Sign in with Discord"
+        }
     }
 }

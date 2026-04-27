@@ -1,6 +1,7 @@
-import Button, { ButtonSizes } from "./_components/ui/Button";
-import ButtonGroup from "./_components/ui/ButtonGroup";
-import Icon from "./_components/ui/Icon";
+import AuthButtons from "../_components/auth/AuthButtons";
+import Button, { ButtonSizes } from "../_components/ui/Button";
+import ButtonGroup from "../_components/ui/ButtonGroup";
+import Icon from "../_components/ui/Icon";
 
 export default function Home() {
     return (
@@ -12,6 +13,7 @@ export default function Home() {
             <Button size={ButtonSizes.Big} active={true}>
                 <Icon name="ui/VoidRelicIcon" size={64} />
             </Button>
+            <AuthButtons></AuthButtons>
         </div>
     );
 }

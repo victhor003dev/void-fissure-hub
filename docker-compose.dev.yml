@@ -10,7 +10,7 @@ services:
       - .:/app
       - /app/node_modules
     environment:
-      MONGODB_URI: mongodb://mongo:27017/mydb
+      MONGODB_URI: mongodb://mongo:27017/vfh
     depends_on:
       - mongo
 
