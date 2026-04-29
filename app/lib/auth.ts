@@ -1,6 +1,6 @@
+import clientPromise from "@/app/lib/mongodb";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import clientPromise from "./mongodb";
 
 const client = await clientPromise;
 

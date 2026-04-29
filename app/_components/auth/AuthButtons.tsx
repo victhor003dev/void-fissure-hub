@@ -1,8 +1,9 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { authClient } from "../../lib/auth-client"; // Change this path to match your file
-import Button, { ButtonSizes } from "../ui/Button";
-import Icon from "../ui/Icon";
+import { authClient } from "@/app/lib/auth-client"; // Change this path to match your file
+
+import Button, { ButtonSizes } from "@/app/_components/ui/Button";
+import Icon from "@/app/_components/ui/Icon";
 
 export default function AuthButtons() {
     const { data: session } = authClient.useSession();
