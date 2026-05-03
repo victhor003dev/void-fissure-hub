@@ -12,6 +12,11 @@
     --border-active: #7a6d52;
     --content-active: var(--primary-active);
 
+    --color-success: #3b9208;
+    --color-error: #db1f1e;
+    --color-info: #45b2ea;
+    --color-warning: #e7b907;
+
     --text-button: 500 24px "Roboto", sans-serif;
 }
 
@@ -27,6 +32,19 @@
     --color-primary: var(--primary-inactive);
     --color-border: var(--border-inactive);
     --color-content: var(--content-inactive);
+
+    --color-success: var(--color-success);
+    --color-error: var(--color-error);
+    --color-info: var(--color-info);
+    --color-warning: var(--color-warning);
+}
+
+@utility bg-border-var {
+    background-color: var(--color-border);
+}
+
+@utility text-content-var {
+    color: var(--color-content);
 }
 
 @utility interactive-shadow-* {
@@ -34,30 +52,76 @@
         var(--color-border);
 }
 
+@utility separator-bg {
+    background-image: radial-gradient(
+        circle,
+        var(--color-primary) 90%,
+        var(--color-background) 100%
+    );
+}
+
+/* Add these to your globals.css */
+
+@utility toast-info {
+    --color-border: var(--color-info);
+    --color-content: var(--color-info);
+    border-color: var(--color-info);
+}
+
+@utility toast-success {
+    --color-border: var(--color-success);
+    --color-content: var(--color-success);
+    border-color: var(--color-success);
+}
+
+@utility toast-warning {
+    --color-border: var(--color-warning);
+    --color-content: var(--color-warning);
+    border-color: var(--color-warning);
+}
+
+@utility toast-error {
+    --color-border: var(--color-error);
+    --color-content: var(--color-error);
+    border-color: var(--color-error);
+}
+
 .active {
     --color-primary: var(--primary-active);
     --color-border: var(--border-active);
     --color-content: var(--content-active);
-    border-top: solid 1px var(--color-border);
-    border-right: solid 1px var(--color-border);
-    border-left: solid 1px var(--color-border);
+
+    &:not(.is-vitruvian) {
+        border-top: solid 1px var(--color-border);
+        border-right: solid 1px var(--color-border);
+        border-left: solid 1px var(--color-border);
+    }
 }
 
 .interactive {
     position: relative;
-    overflow: hidden;
     isolation: isolate;
 
+    border: solid 1px transparent;
+    border-bottom: none;
+
+    &:not(.is-vitruvian) {
+        overflow: hidden;
+    }
+
     &:hover {
-        border-top: solid 1px var(--color-border);
-        border-right: solid 1px var(--color-border);
-        border-left: solid 1px var(--color-border);
         --color-primary: var(--primary-active);
         --color-border: var(--border-active);
         --color-content: var(--content-active);
 
-        &::after {
-            height: 100%;
+        &:not(.is-vitruvian) {
+            border-top: solid 1px var(--color-border);
+            border-right: solid 1px var(--color-border);
+            border-left: solid 1px var(--color-border);
+
+            &::after {
+                height: 100%;
+            }
         }
     }
 
@@ -76,17 +140,52 @@
         );
         filter: opacity(0.7);
         pointer-events: none;
-
         transition: height 0.25s ease-in;
+    }
+}
+
+input[type="text"].interactive,
+input[type="password"].interactive,
+input[type="email"].interactive {
+    --color-border: #181e34;
+    background-clip: padding-box;
+
+    &:hover,
+    &:focus {
+        --color-border: var(--border-active);
     }
 }
 
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: ial, Helvetica, sans-serif;
+    font-family: var(--font-roboto);
 }
 
-.refreshme {
-    display: none;
+@keyframes toast-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toast-exit {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.animate-toast-entry {
+    animation: toast-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-toast-exit {
+    animation: toast-exit 0.3s ease-in-out forwards;
 }
