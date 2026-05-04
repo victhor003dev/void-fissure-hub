@@ -1,19 +1,16 @@
-import AuthButtons from "../_components/auth/AuthButtons";
-import Button, { ButtonSizes } from "../_components/ui/Button";
-import ButtonGroup from "../_components/ui/ButtonGroup";
-import Icon from "../_components/ui/Icon";
+import AuthModal from "@/app/_components/auth/AuthModal";
+import LocaleSwitcher from "@/app/_components/LocaleSwitcher";
+import ToastTestButtons from "@/app/_components/test/ToastTestButtons";
 
 export default function Home() {
     return (
-        <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-            <Button>Button</Button>
-            <Button size={ButtonSizes.Square}>
-                <Icon name="ui/LithEraRelic" size={32} />
-            </Button>
-            <Button size={ButtonSizes.Big} active={true}>
-                <Icon name="ui/VoidRelicIcon" size={64} />
-            </Button>
-            <AuthButtons></AuthButtons>
+        <div
+            className="h-screen w-screen font-roboto 
+            bg-[radial-gradient(circle,var(--color-primary)_-50%,var(--color-background)_85%)]"
+        >
+            <AuthModal></AuthModal>
+            <ToastTestButtons></ToastTestButtons>
+            <LocaleSwitcher />
         </div>
     );
 }
