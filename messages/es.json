@@ -9,10 +9,46 @@
             "requiem": "Reliquias Requiem"
         }
     },
-    "login": {
+    "auth": {
+        "loginModal": {
+            "loginButton": "Iniciar sesión",
+            "backButton": "Salir",
+            "doSignUp": "Registrarse",
+            "doSignIn": "Iniciar sesión",
+            "signOffButton": "Cerrar sesión",
+            "toast": {
+                "signOffTitle": "¡Adiós!",
+                "signOffContent": "Has cerrado sesión."
+            }
+        },
+        "emailLogin": {
+            "emailPlaceholder": "Correo electrónico",
+            "passwordPlaceholder": "Contraseña",
+            "repeatPasswordPlaceholder": "Repetir contraseña",
+            "namePlaceholder": "Nombre",
+            "signInButton": "Iniciar sesión",
+            "signUpButton": "Registrarse",
+            "signInTitle": "Iniciar sesión",
+            "signUpTitle": "Registrarse",
+            "nameDisclaimer": "No es el nombre de Warframe, se puede cambiar más tarde",
+            "welcomeBack": "¡Bienvenido de nuevo, {name}!",
+            "signedIn": "Has iniciado sesión como {name}."
+        },
         "socialLogins": {
-            "google": "Iniciar sesión con Google",
-            "discord": "Iniciar sesión con Discord"
+            "google": "Iniciar sesión con <icon></icon> Google",
+            "discord": "Iniciar sesión con <icon></icon> Discord"
+        },
+        "api": {
+            "weakPassword": "La contraseña es demasiado débil. Usa 8 o más caracteres"
+        },
+        "errors": {
+            "USER_ALREADY_EXISTS": "Este correo electrónico ya está registrado.",
+            "INVALID_EMAIL": "Por favor, introduce una dirección de correo electrónico válida.",
+            "INVALID_PASSWORD": "La contraseña proporcionada es incorrecta.",
+            "INVALID_EMAIL_OR_PASSWORD": "Correo electrónico o contraseña inválidos.",
+            "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres.",
+            "PASSWORD_MISMATCH": "Las contraseñas no coinciden.",
+            "default": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo."
         }
     }
 }

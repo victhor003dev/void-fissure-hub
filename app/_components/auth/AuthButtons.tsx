@@ -2,12 +2,14 @@
 import { useTranslations } from "next-intl";
 import { authClient } from "@/app/lib/auth-client"; // Change this path to match your file
 
-import Button, { ButtonSizes } from "@/app/_components/ui/Button";
+import Button, {
+    ButtonSizes,
+    ButtonVariants,
+} from "@/app/_components/ui/Button";
 import Icon from "@/app/_components/ui/Icon";
 
 export default function AuthButtons() {
-    const { data: session } = authClient.useSession();
-    const t = useTranslations("login");
+    const t = useTranslations("auth.socialLogins");
 
     const login = async (provider: "google" | "discord") => {
         await authClient.signIn.social({
@@ -17,37 +19,37 @@ export default function AuthButtons() {
     };
 
     return (
-        <div className="flex items-center gap-3">
-            {session ? (
-                <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium">
-                        {session.user.name}
+        <div className="flex items-center gap-3 flex-col">
+            <>
+                <Button
+                    onClick={() => login("google")}
+                    size={ButtonSizes.Big}
+                    variant={ButtonVariants.Vitruvian}
+                    className="min-w-85"
+                >
+                    <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+                        {t.rich("google", {
+                            icon: () => (
+                                <Icon name="google" className="shrink-0" />
+                            ),
+                        })}
                     </span>
-                    <Button
-                        onClick={() => authClient.signOut()}
-                        size={ButtonSizes.Big}
-                    >
-                        Logout
-                    </Button>
-                </div>
-            ) : (
-                <>
-                    <Button
-                        onClick={() => login("google")}
-                        size={ButtonSizes.Big}
-                    >
-                        {t("socialLogins.google")}
-                        <Icon name="google" />
-                    </Button>
-                    <Button
-                        onClick={() => login("discord")}
-                        size={ButtonSizes.Big}
-                    >
-                        {t("socialLogins.discord")}
-                        <Icon name="discord" />
-                    </Button>
-                </>
-            )}
+                </Button>
+                <Button
+                    onClick={() => login("discord")}
+                    size={ButtonSizes.Big}
+                    variant={ButtonVariants.Vitruvian}
+                    className="min-w-85"
+                >
+                    <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+                        {t.rich("discord", {
+                            icon: () => (
+                                <Icon name="discord" className="shrink-0" />
+                            ),
+                        })}
+                    </span>
+                </Button>
+            </>
         </div>
     );
 }

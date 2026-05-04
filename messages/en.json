@@ -9,10 +9,46 @@
             "requiem": "Requiem Relics"
         }
     },
-    "login": {
+    "auth": {
+        "loginModal": {
+            "loginButton": "Login",
+            "backButton": "Back",
+            "doSignUp": "Sign Up",
+            "doSignIn": "Log In",
+            "signOffButton": "Log Off",
+            "toast": {
+                "signOffTitle": "Bye!",
+                "signOffContent": "You have been logged off."
+            }
+        },
+        "emailLogin": {
+            "emailPlaceholder": "Email",
+            "passwordPlaceholder": "Password",
+            "repeatPasswordPlaceholder": "Repeat Password",
+            "namePlaceholder": "Name",
+            "signInButton": "Log In",
+            "signUpButton": "Register",
+            "signInTitle": "Login",
+            "signUpTitle": "Register",
+            "nameDisclaimer": "Not the warframe name, can be changed later",
+            "welcomeBack": "Welcome back, {name}!",
+            "signedIn": "You are now logged in as {name}."
+        },
         "socialLogins": {
-            "google": "Sign in with Google",
-            "discord": "Sign in with Discord"
+            "google": "Login with <icon></icon> Google",
+            "discord": "Login with <icon></icon> Discord"
+        },
+        "api": {
+            "weakPassword": "The password is too weak. Use 8 or more characters with a mix of letters, numbers, and symbols."
+        },
+        "errors": {
+            "USER_ALREADY_EXISTS": "This email is already registered.",
+            "INVALID_EMAIL": "Please enter a valid email address.",
+            "INVALID_PASSWORD": "The password provided is incorrect.",
+            "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password.",
+            "PASSWORD_TOO_SHORT": "The password must be at least 8 characters long.",
+            "PASSWORD_MISMATCH": "The passwords do not match.",
+            "default": "An unexpected error occurred. Please try again."
         }
     }
 }

@@ -3,6 +3,7 @@ import { Roboto } from "next/font/google";
 import "@/app/[locale]/globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { ToastProvider } from "@/app/_context/ToastProvider";
+import SocialToastWatcher from "@/app/_context/SocialToastWatcher";
 
 const roboto = Roboto({
     variable: "--font-roboto",
@@ -26,7 +27,10 @@ export default function RootLayout({
         >
             <body className="min-h-full flex flex-col">
                 <NextIntlClientProvider>
-                    <ToastProvider>{children}</ToastProvider>
+                    <ToastProvider>
+                        <SocialToastWatcher />
+                        {children}
+                    </ToastProvider>
                 </NextIntlClientProvider>
             </body>
         </html>
