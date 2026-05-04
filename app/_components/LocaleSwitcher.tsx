@@ -22,7 +22,7 @@ export default function LocaleSwitcher() {
     return (
         <div className="relative inline-block">
             <Input
-                as="select"
+                using="select"
                 defaultValue={locale}
                 onChange={handleLanguageChange}
                 className="w-24 cursor-pointer font-bold uppercase"
