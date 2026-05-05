@@ -9,6 +9,10 @@
             "requiem": "Reliquias Requiem"
         }
     },
+    "navbar": {
+        "relicHunting": "Caza de Reliquias",
+        "relics": "Reliquias"
+    },
     "auth": {
         "loginModal": {
             "loginButton": "Iniciar sesión",

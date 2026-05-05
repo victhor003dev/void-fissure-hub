@@ -189,3 +189,28 @@ body {
 .animate-toast-exit {
     animation: toast-exit 0.3s ease-in-out forwards;
 }
+@layer utilities {
+    .typewriter-container {
+        display: inline-flex;
+    }
+
+    .typewriter-text {
+        word-break: break-all;
+        height: 1.2em;
+        width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        animation: t-typing 0.5s steps(var(--n)) forwards;
+    }
+
+    .typewriter-text::before {
+        content: " ";
+        display: inline-block;
+    }
+
+    @keyframes t-typing {
+        to {
+            width: 100%;
+        }
+    }
+}

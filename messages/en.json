@@ -9,6 +9,10 @@
             "requiem": "Requiem Relics"
         }
     },
+    "navbar": {
+        "relicHunting": "Relic Hunting",
+        "relics": "Relics"
+    },
     "auth": {
         "loginModal": {
             "loginButton": "Login",

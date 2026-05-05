@@ -1,7 +1,4 @@
-import AuthModal from "@/app/_components/auth/AuthModal";
-import LocaleSwitcher from "@/app/_components/LocaleSwitcher";
-import InputTestFields from "@/app/_components/test/InputTestFields";
-import ToastTestButtons from "@/app/_components/test/ToastTestButtons";
+import Navbar from "@/app/_components/Navbar";
 
 export default function Home() {
     return (
@@ -9,10 +6,7 @@ export default function Home() {
             className="h-screen w-screen font-roboto 
             bg-[radial-gradient(circle,var(--color-primary)_-10%,var(--color-background)_85%)]"
         >
-            <AuthModal></AuthModal>
-            <ToastTestButtons></ToastTestButtons>
-            <LocaleSwitcher />
-            <InputTestFields />
+            <Navbar />
         </div>
     );
 }
