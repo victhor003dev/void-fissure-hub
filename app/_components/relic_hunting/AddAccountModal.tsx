@@ -69,7 +69,7 @@ export default function AddAccountModal({
 
                 <div className="flex flex-col gap-2">
                     <label className="text-sm text-muted-foreground">
-                        {t("ignLabel")}
+                        {t("accountNameLabel")}
                     </label>
                     <Input
                         name="warframeName"
