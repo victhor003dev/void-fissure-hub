@@ -1,6 +1,8 @@
 import clientPromise from "@/app/lib/mongodb";
 import Items from "@wfcd/items";
 import { decompress } from "lzma";
+import https from "https";
+import http from "http";
 
 // --- TYPES & INTERFACES ---
 
@@ -73,18 +75,65 @@ const decompressAsync = (buffer: Buffer): Promise<string> => {
         decompress(buffer, (result, err) => {
             if (err) return reject(err);
             if (!result) return reject(new Error("Decompression failed"));
-            // Cast result to Buffer to satisfy TS
             resolve(Buffer.from(result as Uint8Array).toString("utf-8"));
         });
     });
 };
 
+function fetchBufferNative(url: string): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+        const client = url.startsWith("https") ? https : http;
+        client
+            .get(url, (res) => {
+                if (
+                    res.statusCode &&
+                    res.statusCode >= 300 &&
+                    res.statusCode < 400 &&
+                    res.headers.location
+                ) {
+                    return resolve(fetchBufferNative(res.headers.location));
+                }
+                if (res.statusCode !== 200) {
+                    return reject(
+                        new Error(
+                            `Failed to fetch ${url}: Status ${res.statusCode}`,
+                        ),
+                    );
+                }
+                const chunks: Buffer[] = [];
+                res.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+                res.on("end", () => resolve(Buffer.concat(chunks)));
+                res.on("error", (err) => reject(err));
+            })
+            .on("error", (err) => reject(err));
+    });
+}
+
+function fetchTextNative(url: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const client = url.startsWith("https") ? https : http;
+        client
+            .get(url, (res) => {
+                if (res.statusCode !== 200) {
+                    return reject(
+                        new Error(
+                            `Failed to fetch ${url}: Status ${res.statusCode}`,
+                        ),
+                    );
+                }
+                let data = "";
+                res.on("data", (chunk) => (data += chunk));
+                res.on("end", () => resolve(data));
+                res.on("error", (err) => reject(err));
+            })
+            .on("error", (err) => reject(err));
+    });
+}
+
 const getManifestText = async (lang: string): Promise<string> => {
-    const indexRes = await fetch(
+    const compressed = await fetchBufferNative(
         `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
-        { cache: "no-store" },
     );
-    const compressed = Buffer.from(await indexRes.arrayBuffer());
     const decompressed = await decompressAsync(compressed);
     const lines = decompressed.split(/\r?\n/);
 
@@ -93,11 +142,10 @@ const getManifestText = async (lang: string): Promise<string> => {
     );
     if (!manifestLine) throw new Error(`Relic manifest not found for ${lang}`);
 
-    const dataRes = await fetch(
+    const textRaw = await fetchTextNative(
         `http://content.warframe.com/PublicExport/Manifest/${manifestLine}`,
-        { cache: "no-store" },
     );
-    const text = (await dataRes.text()).trim();
+    const text = textRaw.trim();
     return text.startsWith("{") ? text : `{${text}}`;
 };
 
@@ -174,13 +222,10 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
     for (const lang of LANGUAGES) {
         console.log(`   Building dictionary for [${lang.toUpperCase()}]...`);
         try {
-            const indexRes = await fetch(
+            const compressed = await fetchBufferNative(
                 `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
-                { cache: "no-store" },
             );
-            const lines = (
-                await decompressAsync(Buffer.from(await indexRes.arrayBuffer()))
-            ).split(/\r?\n/);
+            const lines = (await decompressAsync(compressed)).split(/\r?\n/);
 
             const targetManifests = [
                 "ExportWarframes",
@@ -195,10 +240,10 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
             for (const target of targetManifests) {
                 const line = lines.find((l) => l.includes(target));
                 if (!line) continue;
-                const res = await fetch(
+
+                const rawText = await fetchTextNative(
                     `http://content.warframe.com/PublicExport/Manifest/${line}`,
                 );
-                const rawText = await res.text();
                 const json = JSON.parse(
                     rawText
                         .trim()
@@ -262,7 +307,6 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
     );
 
     try {
-        // We cast the Items instance to an array of our specific interface
         const items = new Items({
             category: ["Relics"],
         }) as unknown as WfcdRelic[];
@@ -281,7 +325,6 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
         masterMap.forEach((relic) => {
             let isVaulted = vaultMap.get(relic.uniqueId) || false;
 
-            // Manual Override for the Eterna/Omni Consolidation
             if (relic.uniqueId.includes("T5VoidProjectionImmortalOmniA")) {
                 isVaulted = false;
             }
