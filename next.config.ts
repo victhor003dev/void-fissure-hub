@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     output: "standalone",
     reactCompiler: true,
     allowedDevOrigins: ["localhost:3000", "192.168.4.235"],
+    serverExternalPackages: ["lzma"],
 };
 
 const withNextIntl = createNextIntlPlugin({
