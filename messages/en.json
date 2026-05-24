@@ -7,11 +7,158 @@
             "neo": "Neo Relics",
             "axi": "Axi Relics",
             "requiem": "Requiem Relics"
-        }
+        },
+        "sort": {
+            "mostRecent": "Newest",
+            "leastRecent": "Oldest",
+            "refinementAsc": "Lowest Refinement",
+            "refinementDesc": "Highest Refinement",
+            "slotsAvailableAsc": "Most Slots Available",
+            "slotsAvailableDesc": "Least Slots Available",
+            "soonestAsc": "Soonest First",
+            "soonestDesc": "Latest First"
+        },
+        "squads": {
+            "newSquadButtonOpenModal": "Create Squad",
+            "cancel": "Cancel",
+            "submit": "Create Squad",
+            "modalTitle": "Create a new Squad",
+            "dateLabel": "When will this happen?",
+            "addAnotherAccount": "Add a warframe account",
+            "accountSelectionLabel": "What account is running the squad?",
+            "relicLabel": "Relic",
+            "confirmTitle": "Confirm Squad Creation",
+            "confirmMessage": "Confirm hosting {relic} - {refinement} at {date} as {account}?",
+            "noSquadsFound": "No squads found.",
+            "totalFound": "{count, plural, =0 {Squads: <number>None</number>} other {Squads: <number>#</number>}}",
+            "hosting": "Hosted Squads",
+            "joined": "Joined Squads",
+            "toast": {
+                "createSuccessTitle": "Squad Created",
+                "createSuccessContent": "Your squad is now live.",
+                "errorTitle": "Action Failed",
+                "timeAdjusted": "The time was adjusted to the earliest possible slot.",
+                "genericError": "An unexpected error occurred. Please try again.",
+                "connectionError": "Could not connect to the server.",
+                "date_too_early": "The execution date must be in the future.",
+                "invalid_date_format": "The date provided is invalid.",
+                "unauthorized": "You must be logged in to do that.",
+                "relic_required": "A target relic is required.",
+                "database_error": "We couldn't save your squad. Try again later."
+            }
+        },
+        "squadCard": {
+            "currentUserBadge": "You",
+            "hostBadge": "Host",
+            "selectAccountTitle": "Select Account",
+            "loadingAccounts": "Loading accounts...",
+            "noAccountsFound": "No accounts found.",
+            "cancel": "Cancel",
+            "confirmJoin": "Confirm Join",
+            "viewButton": "Details",
+            "joinButton": "Join Squad",
+            "leaveButton": "Leave Squad",
+            "disbandButton": "Disband Squad",
+            "loginToJoinLabel": "Login to Join",
+            "close": "Close",
+            "emptySlot": "Empty Slot",
+            "hiddenSlot": "Hidden Slot",
+            "squadSize": "{currentSize} / {maxSize} Tenno",
+            "refinement": {
+                "intact": "Intact",
+                "exceptional": "Exceptional",
+                "flawless": "Flawless",
+                "radiant": "Radiant"
+            },
+            "confirmDisbandTitle": "Disband Squad?",
+            "confirmDisbandMessage": "This will remove the squad for everyone. This action cannot be undone.",
+            "timeUntilLabel": "Time until:",
+            "timeUntilExpired": "Starting soon / In progress",
+            "toast": {
+                "errorTitle": "Error",
+                "joinSuccessTitle": "Squad Joined",
+                "joinSuccessContent": "You are now a member of the squad.",
+                "joinErrorContent": "Failed to join squad.",
+                "leaveSuccessTitle": "Left Squad",
+                "leaveSuccessContent": "You have successfully left the squad.",
+                "leaveErrorContent": "Could not leave squad.",
+                "disbandSuccessTitle": "Squad Disbanded",
+                "disbandSuccessContent": "The squad has been removed.",
+                "disbandErrorContent": "Failed to disband.",
+                "genericErrorContent": "An unexpected error occurred.",
+                "connectionErrorContent": "Could not connect to the server."
+            }
+        },
+        "joinModal": {
+            "title": "Select Account",
+            "cancel": "Cancel",
+            "confirm": "Confirm Join"
+        },
+        "searchPlaceholder": "Search"
     },
     "navbar": {
         "relicHunting": "Relic Hunting",
         "relics": "Relics"
+    },
+    "account": {
+        "addAccountTitle": "Add Profile",
+        "subtitle": "Manage your credentials and configurations.",
+        "profileSectionTitle": "User Profile",
+        "accountNameLabel": "Account Name",
+        "socialAccountDisclaimer": "Linked through your social authentication provider.",
+        "platformLabel": "Platform",
+        "saveButton": "Save Profile",
+        "savingButton": "Saving...",
+        "cancelButton": "Cancel",
+        "namePlaceholder": "JohnWarframe",
+        "linkedProfilesTitle": "Linked Tenno Profiles",
+        "addProfileButton": "Add Profile",
+        "loadingProfiles": "Loading profiles...",
+        "noProfiles": "No profiles linked yet.",
+        "unlinkProfileTitle": "Unlink Profile",
+        "accountCreatedDate": "Account Created: {date}",
+        "dangerZoneTitle": "Danger Zone",
+        "dangerZoneDescription": "Once you delete your account, there is no going back. All hosted squads, linked profiles, and user configurations will be wiped permanently from our systems.",
+        "deleteAccountButton": "Delete Account",
+        "platforms": {
+            "pc": "PC",
+            "xbox": "Xbox",
+            "playstation": "PlayStation",
+            "switch": "Nintendo Switch",
+            "iphone": "iPhone (iOS)",
+            "android": "Android"
+        },
+        "unlinkModal": {
+            "title": "Unlink Game Account",
+            "message": "Are you sure you want to unlink \"{name}\"? You will lose access to tracking data associated with this profile."
+        },
+        "toast": {
+            "errorTitle": "Error",
+            "errorContent": "Failed to update profile.",
+            "genericSuccessTitle": "Success",
+            "profileSuccessTitle": "Profile Updated",
+            "profileSuccessContent": "Your structural adjustments have been saved.",
+            "accountAddedTitle": "Profile Linked",
+            "accountAddedContent": "Your Tenno profile has been linked successfully.",
+            "addErrorTitle": "Link Failed",
+            "addErrorContent": "An error occurred while adding your profile. Please try again.",
+            "profileRemoved": "Profile unlinked successfully.",
+            "profileRemoveError": "Could not remove your profile. Please try again.",
+            "purgeSuccessTitle": "Account Purged",
+            "purgeSuccessContent": "All your structural records have been permanently wiped.",
+            "purgeError": "An unexpected backend breakdown occurred."
+        },
+        "errors": {
+            "duplicateAccount": "This account has already been added."
+        },
+        "stage1": {
+            "title": "Confirm Account Deletion (Stage 1/2)",
+            "message": "Are you completely sure you want to initialize the deletion routine? Please review carefully before processing."
+        },
+        "stage2": {
+            "title": "Final Warning: Irreversible Action (Stage 2/2)",
+            "message": "This will completely remove all your metadata, linked accounts, and structural assignments from this service. This process is fully irreversible."
+        }
     },
     "auth": {
         "loginModal": {
@@ -36,7 +183,9 @@
             "signUpTitle": "Register",
             "nameDisclaimer": "Not the warframe name, can be changed later",
             "welcomeBack": "Welcome back, {name}!",
-            "signedIn": "You are now logged in as {name}."
+            "signedIn": "You are now logged in as {name}.",
+            "successTitle": "Account Created",
+            "accountCreated": "Your account has been created. You are now logged in."
         },
         "socialLogins": {
             "google": "Login with <icon></icon> Google",
@@ -53,6 +202,72 @@
             "PASSWORD_TOO_SHORT": "The password must be at least 8 characters long.",
             "PASSWORD_MISMATCH": "The passwords do not match.",
             "default": "An unexpected error occurred. Please try again."
+        }
+    },
+    "search": {
+        "relicAutocomplete": {
+            "placeholder": "Lith A1, Boltor, etc.",
+            "rewardContains": "Contains: {reward}",
+            "noResults": "No relics found for \"{query}\".",
+            "vaulted": "Vaulted"
+        }
+    },
+    "confirmationModal": {
+        "confirmButton": "Confirm",
+        "confirmButtonTimed": "Confirm ({time}s)",
+        "cancelButton": "Cancel"
+    },
+    "squadCard": {
+        "joinButton": "Join",
+        "loginToJoinLabel": "Login to join",
+        "squadSize": "{currentSize}/{maxSize} Tenno",
+        "refinement": {
+            "intact": "Intact",
+            "exceptional": "Exceptional",
+            "flawless": "Flawless",
+            "radiant": "Radiant"
+        }
+    },
+    "notifications": {
+        "title": "Notifications",
+        "unread": "unread",
+        "loading": "Loading notifications...",
+        "noNotifications": "No new notifications",
+        "errorLoading": "Error loading notifications",
+        "defaultRelicName": "Relic",
+        "unknownUser": "Someone",
+        "defaultTitle": "Notification",
+        "new_member_title": "New Member",
+        "new_member_body": "{accountName} has joined your squad!",
+        "member_left_title": "Member Left",
+        "member_left_body": "A member has left your squad.",
+        "squad_disbanded_title": "Squad Disbanded",
+        "squad_disbanded_body_detailed": "{host} has disbanded the squad for {relic}.",
+        "squad_expired_title": "Squad Expired",
+        "squad_expired_body": "Your squad for {relic} was removed because it expired or was empty."
+    },
+    "relics": {
+        "loadingStatus": "Loading Relics...",
+        "endOfList": "End of Manifest",
+        "totalFound": "{count, plural, =0 {No relics found} one {<number>{count}</number> relic found} other {<number>{count}</number> relics found}}",
+        "searchPlaceholder": "Search relics...",
+        "sorting": {
+            "nameAsc": "Name (A-Z)",
+            "nameDesc": "Name (Z-A)",
+            "era": "Era"
+        },
+        "modal": {
+            "closeLabel": "Close modal",
+            "statusVaulted": "Vaulted",
+            "statusActive": "Active",
+            "btnSearch": "Search Squad",
+            "btnCreate": "Create Squad",
+            "rewardManifest": "Rewards",
+            "rarity": {
+                "common": "Common",
+                "uncommon": "Uncommon",
+                "rare": "Rare"
+            }
         }
     }
 }

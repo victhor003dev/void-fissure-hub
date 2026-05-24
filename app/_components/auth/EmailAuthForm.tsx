@@ -116,14 +116,19 @@ export default function EmailAuthForm({
             className="flex flex-col gap-4 w-full items-center max-w-sm p-2 pt-6 bg-background/50 border border-primary"
         >
             {isSignUp && (
-                <Input
-                    type="text"
-                    placeholder={t("emailLogin.namePlaceholder")}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="min-w-32 w-9/10 bg-background"
-                    required
-                />
+                <>
+                    <Input
+                        type="text"
+                        placeholder={t("emailLogin.namePlaceholder")}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="min-w-32 w-9/10 bg-background"
+                        required
+                    />
+                    <span className="text-content">
+                        *{t("emailLogin.nameDisclaimer")}
+                    </span>
+                </>
             )}
 
             <Input

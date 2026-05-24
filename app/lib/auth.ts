@@ -10,6 +10,12 @@ const db = client.db();
 export const auth = betterAuth({
     database: mongodbAdapter(db),
     baseURL: process.env.BETTER_AUTH_URL,
+    user: {
+        deleteUser: {
+            enabled: true,
+        },
+    },
+
     emailAndPassword: {
         enabled: true,
         minPasswordLength: 8,

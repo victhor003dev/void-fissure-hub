@@ -22,10 +22,10 @@ export default function Input({ className, ...props }: UniversalInputProps) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const baseClassNames =
-        "placeholder-shown:uppercase bg-transparent p-2 outline-none appearance-none text-content w-full transition-all border-none";
+        "placeholder-shown:uppercase p-2 bg-transparent outline-none appearance-none text-content w-full transition-all border-none interactive";
     const combinedClassName = `${baseClassNames} ${className || ""}`;
 
-    const shadowWrapperClasses = `relative w-full interactive-shadow-4 transition-all`;
+    const shadowWrapperClasses = `relative w-full interactive-shadow-4 transition-all bg-background`;
     const interactiveClasses = `interactive group relative inline-flex items-center w-full transition-all`;
 
     useEffect(() => {

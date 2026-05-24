@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.*
+.pnpm-store
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -42,3 +43,6 @@ next-env.d.ts
 
 # next-intl (dev-only type safety file)
 messages/*.d.json.ts
+
+# operation
+.es_items_cache.json

@@ -22,6 +22,10 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    deploy:
+      resources:
+        limits:
+          memory: 1G
 
 volumes:
   mongo_data:

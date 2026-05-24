@@ -45,9 +45,16 @@ export default function AuthModal() {
             {session ? (
                 <Button
                     type="button"
-                    onClick={(e) => {
+                    onClick={async (e) => {
                         e.stopPropagation();
-                        authClient.signOut();
+                        await authClient.signOut({
+                            fetchOptions: {
+                                onSuccess: () => {
+                                    window.location.reload();
+                                },
+                            },
+                        });
+
                         addToast({
                             content: t("toast.signOffContent"),
                             title: t("toast.signOffTitle"),

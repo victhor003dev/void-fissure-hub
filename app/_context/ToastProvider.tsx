@@ -37,7 +37,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             title,
             timerSeconds = 6,
         }: ToastOptions) => {
-            const id = crypto.randomUUID();
+            const generateId = () => {
+                try {
+                    return crypto.randomUUID();
+                } catch {
+                    return (
+                        Math.random().toString(36).substring(2, 11) +
+                        Date.now().toString(36)
+                    );
+                }
+            };
+
+            const id = generateId();
+
             setToasts((prev) => [
                 ...prev,
                 { id, content, toastType, title, timerSeconds },

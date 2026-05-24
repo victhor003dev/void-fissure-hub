@@ -7,22 +7,169 @@
             "neo": "Reliquias Neo",
             "axi": "Reliquias Axi",
             "requiem": "Reliquias Requiem"
-        }
+        },
+        "sort": {
+            "mostRecent": "Más recientes",
+            "leastRecent": "Más antiguas",
+            "refinementAsc": "Refinamiento más bajo",
+            "refinementDesc": "Refinamiento más alto",
+            "slotsAvailableAsc": "Más ranuras disponibles",
+            "slotsAvailableDesc": "Menos ranuras disponibles",
+            "soonestAsc": "Más pronto primero",
+            "soonestDesc": "Más tarde primero"
+        },
+        "squads": {
+            "newSquadButtonOpenModal": "Crear Escuadrón",
+            "cancel": "Cancelar",
+            "submit": "Crear Escuadrón",
+            "modalTitle": "Crear un nuevo Escuadrón",
+            "dateLabel": "¿Cuándo sucederá?",
+            "addAnotherAccount": "Agregar una cuenta de Warframe",
+            "accountSelectionLabel": "¿Qué cuenta lidera el escuadrón?",
+            "relicLabel": "Reliquia",
+            "confirmTitle": "Confirmar creación de escuadrón",
+            "confirmMessage": "¿Confirmar creación de escuadrón para hostear {relic} - {refinement} en {date} como {account}?",
+            "noSquadsFound": "No se encontraron escuadrones.",
+            "totalFound": "{count, plural, =0 {Escuadrones: <number>Ninguno</number>} other {Escuadrones: <number>#</number>}}",
+            "hosting": "Escuadrones Organizados",
+            "joined": "Escuadrones Unidos",
+            "toast": {
+                "createSuccessTitle": "Escuadrón creado",
+                "createSuccessContent": "Tu escuadrón ahora está activo.",
+                "errorTitle": "Acción fallida",
+                "timeAdjusted": "La hora se ajustó a la ranura más cercana disponible.",
+                "genericError": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+                "connectionError": "No se pudo conectar al servidor.",
+                "date_too_early": "La fecha debe ser en el futuro.",
+                "invalid_date_format": "La fecha proporcionada es inválida.",
+                "unauthorized": "Debes iniciar sesión para hacer eso.",
+                "relic_required": "Se requiere una reliquia objetivo.",
+                "database_error": "No pudimos guardar tu escuadrón. Inténtalo de nuevo más tarde."
+            }
+        },
+        "squadCard": {
+            "currentUserBadge": "Tú",
+            "hostBadge": "Anfitrión",
+            "selectAccountTitle": "Seleccionar Cuenta",
+            "loadingAccounts": "Cargando cuentas...",
+            "noAccountsFound": "No se encontraron cuentas.",
+            "cancel": "Cancelar",
+            "confirmJoin": "Confirmar Unirse",
+            "viewButton": "Detalles",
+            "joinButton": "Unirse al Escuadrón",
+            "leaveButton": "Salir del Escuadrón",
+            "disbandButton": "Disolver Escuadrón",
+            "loginToJoinLabel": "Inicia sesión para unirte",
+            "close": "Cerrar",
+            "emptySlot": "Ranura Vacía",
+            "hiddenSlot": "Ranura Oculta",
+            "squadSize": "{currentSize} / {maxSize} Tenno",
+            "refinement": {
+                "intact": "Intacta",
+                "exceptional": "Excepcional",
+                "flawless": "Perfecta",
+                "radiant": "Radiante"
+            },
+            "confirmDisbandTitle": "¿Disolver Escuadrón?",
+            "confirmDisbandMessage": "Esto eliminará el escuadrón para todos. Esta acción no se puede deshacer.",
+            "timeUntilLabel": "Tiempo hasta:",
+            "timeUntilExpired": "Tiempo restante expirado",
+            "toast": {
+                "errorTitle": "Error",
+                "joinSuccessTitle": "Añadido al Escuadrón",
+                "joinSuccessContent": "Ahora eres miembro del escuadrón.",
+                "joinErrorContent": "Error al unirse al escuadrón.",
+                "leaveSuccessTitle": "Escuadrón Abandonado",
+                "leaveSuccessContent": "Has salido del escuadrón con éxito.",
+                "leaveErrorContent": "No se pudo salir del escuadrón.",
+                "disbandSuccessTitle": "Escuadrón Disuelto",
+                "disbandSuccessContent": "El escuadrón ha sido eliminado.",
+                "disbandErrorContent": "Error al disolver.",
+                "genericErrorContent": "Ha ocurrido un error inesperado.",
+                "connectionErrorContent": "No se pudo conectar con el servidor."
+            }
+        },
+        "joinModal": {
+            "title": "Seleccionar Cuenta",
+            "cancel": "Cancelar",
+            "confirm": "Confirmar Unirse"
+        },
+        "searchPlaceholder": "Buscar"
     },
     "navbar": {
         "relicHunting": "Caza de Reliquias",
         "relics": "Reliquias"
     },
+    "account": {
+        "addAccountTitle": "Agregar Perfil",
+        "subtitle": "Gestiona tus credenciales y configuraciones.",
+        "profileSectionTitle": "Perfil de Usuario",
+        "accountNameLabel": "Nombre de la Cuenta",
+        "socialAccountDisclaimer": "Vinculado a través de tu proveedor de autenticación social.",
+        "platformLabel": "Plataforma",
+        "saveButton": "Guardar Perfil",
+        "savingButton": "Guardando...",
+        "cancelButton": "Cancelar",
+        "namePlaceholder": "JohnWarframe",
+        "linkedProfilesTitle": "Perfiles Tenno Vinculados",
+        "addProfileButton": "Añadir Perfil",
+        "loadingProfiles": "Cargando perfiles...",
+        "noProfiles": "No hay perfiles vinculados todavía.",
+        "unlinkProfileTitle": "Desvincular Perfil",
+        "accountCreatedDate": "Cuenta Creada: {date}",
+        "dangerZoneTitle": "Zona de Peligro",
+        "dangerZoneDescription": "Una vez que elimines tu cuenta, no hay marcha atrás. Todos los escuadrones organizados, perfiles vinculados y configuraciones de usuario se borrarán permanentemente de nuestros sistemas.",
+        "deleteAccountButton": "Eliminar Cuenta",
+        "platforms": {
+            "pc": "PC",
+            "xbox": "Xbox",
+            "playstation": "PlayStation",
+            "switch": "Nintendo Switch",
+            "iphone": "iPhone (iOS)",
+            "android": "Android"
+        },
+        "unlinkModal": {
+            "title": "Desvincular Cuenta de Juego",
+            "message": "¿Estás seguro de que deseas desvincular \"{name}\"? Perderás el acceso a los datos de seguimiento asociados con este perfil."
+        },
+        "toast": {
+            "errorTitle": "Error",
+            "errorContent": "No se pudo actualizar el perfil.",
+            "genericSuccessTitle": "Éxito",
+            "profileSuccessTitle": "Perfil Actualizado",
+            "profileSuccessContent": "Tus ajustes estructurales han sido guardados.",
+            "accountAddedTitle": "Perfil Vinculado",
+            "accountAddedContent": "Tu perfil de Tenno se ha vinculado correctamente.",
+            "addErrorTitle": "Error de Vinculación",
+            "addErrorContent": "Ocurrió un error al agregar tu perfil. Por favor, inténtalo de nuevo.",
+            "profileRemoved": "Perfil desvinculado con éxito.",
+            "profileRemoveError": "No se pudo eliminar tu perfil. Por favor, inténtalo de nuevo.",
+            "purgeSuccessTitle": "Cuenta Purgada",
+            "purgeSuccessContent": "Todos tus registros estructurales han sido eliminados permanentemente.",
+            "purgeError": "Ocurrió una falla inesperada en el servidor."
+        },
+        "errors": {
+            "duplicateAccount": "Esta cuenta ya ha sido agregada."
+        },
+        "stage1": {
+            "title": "Confirmar eliminación de cuenta (Etapa 1/2)",
+            "message": "¿Estás completamente seguro de que deseas iniciar la rutina de eliminación? Por favor, revísalo detenidamente antes de proceder."
+        },
+        "stage2": {
+            "title": "Advertencia final: Acción irreversible (Etapa 2/2)",
+            "message": "Esto eliminará por completo todos tus metadatos, cuentas vinculadas y asignaciones estructurales de este servicio. Este proceso es totalmente irreversible."
+        }
+    },
     "auth": {
         "loginModal": {
             "loginButton": "Iniciar sesión",
-            "backButton": "Salir",
+            "backButton": "Volver",
             "doSignUp": "Registrarse",
             "doSignIn": "Iniciar sesión",
             "signOffButton": "Cerrar sesión",
             "toast": {
                 "signOffTitle": "¡Adiós!",
-                "signOffContent": "Has cerrado sesión."
+                "signOffContent": "Has cerrado sesión correctamente."
             }
         },
         "emailLogin": {
@@ -36,23 +183,91 @@
             "signUpTitle": "Registrarse",
             "nameDisclaimer": "No es el nombre de Warframe, se puede cambiar más tarde",
             "welcomeBack": "¡Bienvenido de nuevo, {name}!",
-            "signedIn": "Has iniciado sesión como {name}."
+            "signedIn": "Has iniciado sesión como {name}.",
+            "successTitle": "Cuenta creada",
+            "accountCreated": "Tu cuenta ha sido creada. Ya has iniciado sesión."
         },
         "socialLogins": {
             "google": "Iniciar sesión con <icon></icon> Google",
             "discord": "Iniciar sesión con <icon></icon> Discord"
         },
         "api": {
-            "weakPassword": "La contraseña es demasiado débil. Usa 8 o más caracteres"
+            "weakPassword": "La contraseña es demasiado débil. Usa 8 o más caracteres con una mezcla de letras, números y símbolos."
         },
         "errors": {
             "USER_ALREADY_EXISTS": "Este correo electrónico ya está registrado.",
-            "INVALID_EMAIL": "Por favor, introduce una dirección de correo electrónico válida.",
+            "INVALID_EMAIL": "Por favor, introduce un correo electrónico válido.",
             "INVALID_PASSWORD": "La contraseña proporcionada es incorrecta.",
             "INVALID_EMAIL_OR_PASSWORD": "Correo electrónico o contraseña inválidos.",
             "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres.",
             "PASSWORD_MISMATCH": "Las contraseñas no coinciden.",
             "default": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo."
+        }
+    },
+    "search": {
+        "relicAutocomplete": {
+            "placeholder": "Lith A1, Boltor, etc.",
+            "rewardContains": "Contiene: {reward}",
+            "noResults": "No se encontraron reliquias para \"{query}\".",
+            "vaulted": "En Bóveda"
+        }
+    },
+    "confirmationModal": {
+        "confirmButton": "Confirmar",
+        "confirmButtonTimed": "Confirmar ({time}s)",
+        "cancelButton": "Cancelar"
+    },
+    "squadCard": {
+        "joinButton": "Unirse",
+        "loginToJoinLabel": "Inicia sesión para unirte",
+        "squadSize": "{currentSize}/{maxSize} Tenno",
+        "refinement": {
+            "intact": "Intacta",
+            "exceptional": "Excepcional",
+            "flawless": "Perfecta",
+            "radiant": "Radiante"
+        }
+    },
+    "notifications": {
+        "title": "Notificaciones",
+        "unread": "sin leer",
+        "loading": "Cargando notificaciones...",
+        "noNotifications": "No hay notificaciones nuevas",
+        "errorLoading": "Error al cargar las notificaciones",
+        "defaultRelicName": "Reliquia",
+        "unknownUser": "Alguien",
+        "defaultTitle": "Notificación",
+        "new_member_title": "Nuevo Miembro",
+        "new_member_body": "¡{accountName} se ha unido a tu escuadrón!",
+        "member_left_title": "Miembro Saliente",
+        "member_left_body": "Un miembro ha abandonado tu escuadrón.",
+        "squad_disbanded_title": "Escuadrón Disuelto",
+        "squad_disbanded_body_detailed": "{host} ha disuelto el escuadrón para {relic}.",
+        "squad_expired_title": "Escuadrón Expirado",
+        "squad_expired_body": "Tu escuadrón para {relic} fue eliminado porque expiró o estaba vacío."
+    },
+    "relics": {
+        "loadingStatus": "Cargando Reliquias...",
+        "endOfList": "Fin del Manifiesto",
+        "totalFound": "{count, plural, =0 {No se encontraron reliquias} one {<number>{count}</number> reliquia encontrada} other {<number>{count}</number> reliquias encontradas}}",
+        "searchPlaceholder": "Buscar reliquias...",
+        "sorting": {
+            "nameAsc": "Nombre (A-Z)",
+            "nameDesc": "Nombre (Z-A)",
+            "era": "Era"
+        },
+        "modal": {
+            "closeLabel": "Cerrar modal",
+            "statusVaulted": "En Bóveda",
+            "statusActive": "Activa",
+            "btnSearch": "Buscar Escuadrón",
+            "btnCreate": "Crear Escuadrón",
+            "rewardManifest": "Recompensas",
+            "rarity": {
+                "common": "Común",
+                "uncommon": "Poco Común",
+                "rare": "Raro"
+            }
         }
     }
 }

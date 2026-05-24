@@ -31,8 +31,10 @@ export default function Button({
     variant = ButtonVariants.Default,
     active = false,
     className = "",
+    disabled,
     ...props
 }: ButtonProps) {
+    const isDisabled = !!disabled;
     const isVitruvian = variant === ButtonVariants.Vitruvian;
     const vitruvianClip =
         "polygon(16px 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0% 50%)";
@@ -55,6 +57,7 @@ export default function Button({
         <>
             <button
                 {...props}
+                disabled={isDisabled} // Use the sanitized boolean
                 className={`${normalClasses} [@media(max-width:419px)]:flex hidden`.trim()}
             >
                 <span className="relative z-10 flex items-center gap-3 leading-none transition-colors duration-200">
