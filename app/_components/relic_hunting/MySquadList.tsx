@@ -40,10 +40,12 @@ export default function MySquadList() {
                     <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
                         {t("hosting")}
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {hosting.map((squad) => (
-                            <SquadCard key={squad.id} squad={squad} />
-                        ))}
+                    <div className="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {hosting.map((squad) => (
+                                <SquadCard key={squad.id} squad={squad} />
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
@@ -54,10 +56,12 @@ export default function MySquadList() {
                     <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-content/60">
                         {t("joined")}
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {joined.map((squad) => (
-                            <SquadCard key={squad.id} squad={squad} />
-                        ))}
+                    <div className="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {joined.map((squad) => (
+                                <SquadCard key={squad.id} squad={squad} />
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
