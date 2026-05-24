@@ -82,6 +82,7 @@ const decompressAsync = (buffer: Buffer): Promise<string> => {
 const getManifestText = async (lang: string): Promise<string> => {
     const indexRes = await fetch(
         `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
+        { cache: "no-store" },
     );
     const compressed = Buffer.from(await indexRes.arrayBuffer());
     const decompressed = await decompressAsync(compressed);
@@ -94,6 +95,7 @@ const getManifestText = async (lang: string): Promise<string> => {
 
     const dataRes = await fetch(
         `http://content.warframe.com/PublicExport/Manifest/${manifestLine}`,
+        { cache: "no-store" },
     );
     const text = (await dataRes.text()).trim();
     return text.startsWith("{") ? text : `{${text}}`;
@@ -174,6 +176,7 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
         try {
             const indexRes = await fetch(
                 `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
+                { cache: "no-store" },
             );
             const lines = (
                 await decompressAsync(Buffer.from(await indexRes.arrayBuffer()))
