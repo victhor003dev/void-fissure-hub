@@ -83,8 +83,17 @@ const decompressAsync = (buffer: Buffer): Promise<string> => {
 function fetchBufferNative(url: string): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const client = url.startsWith("https") ? https : http;
+
+        const options = {
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                Accept: "*/*",
+            },
+        };
+
         client
-            .get(url, (res) => {
+            .get(url, options, (res) => {
                 if (
                     res.statusCode &&
                     res.statusCode >= 300 &&
@@ -112,8 +121,16 @@ function fetchBufferNative(url: string): Promise<Buffer> {
 function fetchTextNative(url: string): Promise<string> {
     return new Promise((resolve, reject) => {
         const client = url.startsWith("https") ? https : http;
+        const options = {
+            headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                Accept: "*/*",
+            },
+        };
+
         client
-            .get(url, (res) => {
+            .get(url, options, (res) => {
                 if (res.statusCode !== 200) {
                     return reject(
                         new Error(
@@ -131,6 +148,8 @@ function fetchTextNative(url: string): Promise<string> {
 }
 
 const getManifestText = async (lang: string): Promise<string> => {
+    await sleep(2000);
+
     const compressed = await fetchBufferNative(
         `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
     );
@@ -141,6 +160,8 @@ const getManifestText = async (lang: string): Promise<string> => {
         line.includes("ExportRelicArcane"),
     );
     if (!manifestLine) throw new Error(`Relic manifest not found for ${lang}`);
+
+    await sleep(1000);
 
     const textRaw = await fetchTextNative(
         `http://content.warframe.com/PublicExport/Manifest/${manifestLine}`,
@@ -206,7 +227,6 @@ async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
                     }
                 });
             }
-            await sleep(1000);
         } catch (e) {
             const err = e as Error;
             console.error(`Error in ${lang}: ${err.message}`);
@@ -222,6 +242,8 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
     for (const lang of LANGUAGES) {
         console.log(`   Building dictionary for [${lang.toUpperCase()}]...`);
         try {
+            await sleep(2000);
+
             const compressed = await fetchBufferNative(
                 `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
             );
@@ -240,6 +262,8 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
             for (const target of targetManifests) {
                 const line = lines.find((l) => l.includes(target));
                 if (!line) continue;
+
+                await sleep(500);
 
                 const rawText = await fetchTextNative(
                     `http://content.warframe.com/PublicExport/Manifest/${line}`,
@@ -292,7 +316,6 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
                     }
                 });
             });
-            await sleep(500);
         } catch (e) {
             const err = e as Error;
             console.warn(`   ❌ Error: ${err.message}`);
@@ -355,6 +378,14 @@ export async function syncRelics() {
 
     const finalDocs = Array.from(masterMap.values());
     console.log(`\n💾 Finalizing: Writing ${finalDocs.length} relics to DB...`);
+
+    if (finalDocs.length === 0) {
+        console.log("⚠️ No records were successfully resolved to write.");
+        return {
+            success: false,
+            message: "No data gathered due to stream blocking.",
+        };
+    }
 
     const ops = finalDocs.map((doc) => ({
         updateOne: {
