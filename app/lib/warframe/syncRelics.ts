@@ -1,5 +1,6 @@
 import clientPromise from "@/app/lib/mongodb";
 import Items from "@wfcd/items";
+import { decompress } from "lzma";
 
 // --- TYPES & INTERFACES ---
 
@@ -67,11 +68,35 @@ const LANGUAGES = [
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // --- UTILS ---
+const decompressAsync = (buffer: Buffer): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        decompress(buffer, (result, err) => {
+            if (err) return reject(err);
+            if (!result) return reject(new Error("Decompression failed"));
+            // Cast result to Buffer to satisfy TS
+            resolve(Buffer.from(result as Uint8Array).toString("utf-8"));
+        });
+    });
+};
 
-const getMirrorLangCode = (lang: string): string => {
-    if (lang === "zh") return "zh-Hans";
-    if (lang === "tc") return "zh-Hant";
-    return lang;
+const getManifestText = async (lang: string): Promise<string> => {
+    const indexRes = await fetch(
+        `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
+    );
+    const compressed = Buffer.from(await indexRes.arrayBuffer());
+    const decompressed = await decompressAsync(compressed);
+    const lines = decompressed.split(/\r?\n/);
+
+    const manifestLine = lines.find((line) =>
+        line.includes("ExportRelicArcane"),
+    );
+    if (!manifestLine) throw new Error(`Relic manifest not found for ${lang}`);
+
+    const dataRes = await fetch(
+        `http://content.warframe.com/PublicExport/Manifest/${manifestLine}`,
+    );
+    const text = (await dataRes.text()).trim();
+    return text.startsWith("{") ? text : `{${text}}`;
 };
 
 // --- PHASE 1 & 2: RELIC AGGREGATION ---
@@ -81,20 +106,14 @@ async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
     for (const lang of LANGUAGES) {
         console.log(`📡 Phase 1/2: Fetching Relics [${lang.toUpperCase()}]...`);
         try {
-            const targetLang = getMirrorLangCode(lang);
-
-            await sleep(2000);
-
-            const response = await fetch(
-                `https://vivern.github.io/warframe-public-export-mirror/data/${targetLang}/ExportRelicArcane.json`,
+            const data = JSON.parse(await getManifestText(lang)) as {
+                ExportRelicArcane: RawRelicItem[];
+            };
+            const rawItems = data.ExportRelicArcane.filter(
+                (i) => i.relicRewards,
             );
 
-            if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
-
-            const rawItems = (await response.json()) as RawRelicItem[];
-            const filteredItems = rawItems.filter((i) => i.relicRewards);
-
-            for (const item of filteredItems) {
+            for (const item of rawItems) {
                 const familyId = item.uniqueName.replace(
                     /(Bronze|Silver|Iron|Gold|Radiant|Platinum)$/i,
                     "",
@@ -137,6 +156,7 @@ async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
                     }
                 });
             }
+            await sleep(1000);
         } catch (e) {
             const err = e as Error;
             console.error(`Error in ${lang}: ${err.message}`);
@@ -152,7 +172,13 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
     for (const lang of LANGUAGES) {
         console.log(`   Building dictionary for [${lang.toUpperCase()}]...`);
         try {
-            const targetLang = getMirrorLangCode(lang);
+            const indexRes = await fetch(
+                `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
+            );
+            const lines = (
+                await decompressAsync(Buffer.from(await indexRes.arrayBuffer()))
+            ).split(/\r?\n/);
+
             const targetManifests = [
                 "ExportWarframes",
                 "ExportWeapons",
@@ -164,14 +190,19 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
             const resultMap = new Map<string, string>();
 
             for (const target of targetManifests) {
-                await sleep(2000);
-
+                const line = lines.find((l) => l.includes(target));
+                if (!line) continue;
                 const res = await fetch(
-                    `https://vivern.github.io/warframe-public-export-mirror/data/${targetLang}/${target}.json`,
+                    `http://content.warframe.com/PublicExport/Manifest/${line}`,
                 );
-                if (!res.ok) continue;
-
-                const dataArray = (await res.json()) as RawManifestItem[];
+                const rawText = await res.text();
+                const json = JSON.parse(
+                    rawText
+                        .trim()
+                        .replace(/^[^{]*/, "")
+                        .replace(/[^}]*$/, ""),
+                ) as Record<string, RawManifestItem[]>;
+                const dataArray = json[target] || [];
 
                 dataArray.forEach((item) => {
                     if (item.uniqueName && item.name)
@@ -213,6 +244,7 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
                     }
                 });
             });
+            await sleep(500);
         } catch (e) {
             const err = e as Error;
             console.warn(`   ❌ Error: ${err.message}`);
@@ -227,6 +259,7 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
     );
 
     try {
+        // We cast the Items instance to an array of our specific interface
         const items = new Items({
             category: ["Relics"],
         }) as unknown as WfcdRelic[];
@@ -245,6 +278,7 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
         masterMap.forEach((relic) => {
             let isVaulted = vaultMap.get(relic.uniqueId) || false;
 
+            // Manual Override for the Eterna/Omni Consolidation
             if (relic.uniqueId.includes("T5VoidProjectionImmortalOmniA")) {
                 isVaulted = false;
             }
@@ -275,14 +309,6 @@ export async function syncRelics() {
 
     const finalDocs = Array.from(masterMap.values());
     console.log(`\n💾 Finalizing: Writing ${finalDocs.length} relics to DB...`);
-
-    if (finalDocs.length === 0) {
-        console.log("⚠️ No records were successfully resolved to write.");
-        return {
-            success: false,
-            message: "No data gathered due to stream blocking.",
-        };
-    }
 
     const ops = finalDocs.map((doc) => ({
         updateOne: {
