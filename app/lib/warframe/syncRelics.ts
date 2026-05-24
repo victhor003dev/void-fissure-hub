@@ -83,7 +83,6 @@ const decompressAsync = (buffer: Buffer): Promise<string> => {
 function fetchBufferNative(url: string): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const client = url.startsWith("https") ? https : http;
-
         const options = {
             headers: {
                 "User-Agent":
@@ -91,7 +90,6 @@ function fetchBufferNative(url: string): Promise<Buffer> {
                 Accept: "*/*",
             },
         };
-
         client
             .get(url, options, (res) => {
                 if (
@@ -128,7 +126,6 @@ function fetchTextNative(url: string): Promise<string> {
                 Accept: "*/*",
             },
         };
-
         client
             .get(url, options, (res) => {
                 if (res.statusCode !== 200) {
@@ -147,40 +144,38 @@ function fetchTextNative(url: string): Promise<string> {
     });
 }
 
-const getManifestText = async (lang: string): Promise<string> => {
-    await sleep(2000);
-
-    const compressed = await fetchBufferNative(
-        `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
-    );
-    const decompressed = await decompressAsync(compressed);
-    const lines = decompressed.split(/\r?\n/);
-
-    const manifestLine = lines.find((line) =>
-        line.includes("ExportRelicArcane"),
-    );
-    if (!manifestLine) throw new Error(`Relic manifest not found for ${lang}`);
-
-    await sleep(1000);
-
-    const textRaw = await fetchTextNative(
-        `http://content.warframe.com/PublicExport/Manifest/${manifestLine}`,
-    );
-    const text = textRaw.trim();
-    return text.startsWith("{") ? text : `{${text}}`;
-};
-
-// --- PHASE 1 & 2: RELIC AGGREGATION ---
-async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
-    const masterMap = new Map<string, RelicDoc>();
-
+// --- PIPELINE COMPILATION ---
+async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
     for (const lang of LANGUAGES) {
-        console.log(`📡 Phase 1/2: Fetching Relics [${lang.toUpperCase()}]...`);
+        console.log(
+            `📡 Processing Master Sync & Translation for [${lang.toUpperCase()}]...`,
+        );
         try {
-            const data = JSON.parse(await getManifestText(lang)) as {
+            await sleep(2500);
+
+            const compressedIndex = await fetchBufferNative(
+                `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
+            );
+            const decompressedIndex = await decompressAsync(compressedIndex);
+            const lines = decompressedIndex.split(/\r?\n/);
+
+            const relicLine = lines.find((line) =>
+                line.includes("ExportRelicArcane"),
+            );
+            if (!relicLine) throw new Error(`Relic manifest missing in index`);
+
+            await sleep(500);
+            const rawRelicText = await fetchTextNative(
+                `http://content.warframe.com/PublicExport/Manifest/${relicLine}`,
+            );
+            const cleanedRelicText = rawRelicText.trim().startsWith("{")
+                ? rawRelicText.trim()
+                : `{${rawRelicText.trim()}}`;
+            const relicData = JSON.parse(cleanedRelicText) as {
                 ExportRelicArcane: RawRelicItem[];
             };
-            const rawItems = data.ExportRelicArcane.filter(
+
+            const rawItems = relicData.ExportRelicArcane.filter(
                 (i) => i.relicRewards,
             );
 
@@ -208,7 +203,6 @@ async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
                 }
 
                 const entry = masterMap.get(familyId)!;
-
                 if (!entry.i18n[lang]) {
                     entry.i18n[lang] = { displayName: item.name };
                 }
@@ -227,27 +221,6 @@ async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
                     }
                 });
             }
-        } catch (e) {
-            const err = e as Error;
-            console.error(`Error in ${lang}: ${err.message}`);
-        }
-    }
-    return masterMap;
-}
-
-// --- PHASE 3: TRANSLATE REWARDS ---
-async function translateRewards(masterMap: Map<string, RelicDoc>) {
-    console.log("\n📡 Phase 3: Multi-Manifest Translation...");
-
-    for (const lang of LANGUAGES) {
-        console.log(`   Building dictionary for [${lang.toUpperCase()}]...`);
-        try {
-            await sleep(2000);
-
-            const compressed = await fetchBufferNative(
-                `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
-            );
-            const lines = (await decompressAsync(compressed)).split(/\r?\n/);
 
             const targetManifests = [
                 "ExportWarframes",
@@ -263,8 +236,7 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
                 const line = lines.find((l) => l.includes(target));
                 if (!line) continue;
 
-                await sleep(500);
-
+                await sleep(500); // Small breaker inside language manifest downloads
                 const rawText = await fetchTextNative(
                     `http://content.warframe.com/PublicExport/Manifest/${line}`,
                 );
@@ -303,14 +275,12 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
                     if (resultPath) {
                         finalName = itemMap.get(resultPath) || "";
                     }
-
                     if (!finalName) {
                         finalName =
                             itemMap.get(normalizedPath) ||
                             itemMap.get(rawPath) ||
                             "";
                     }
-
                     if (finalName) {
                         reward.i18n[lang] = finalName;
                     }
@@ -318,7 +288,9 @@ async function translateRewards(masterMap: Map<string, RelicDoc>) {
             });
         } catch (e) {
             const err = e as Error;
-            console.warn(`   ❌ Error: ${err.message}`);
+            console.error(
+                `❌ Error processing language [${lang.toUpperCase()}]: ${err.message}`,
+            );
         }
     }
 }
@@ -347,11 +319,9 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
 
         masterMap.forEach((relic) => {
             let isVaulted = vaultMap.get(relic.uniqueId) || false;
-
             if (relic.uniqueId.includes("T5VoidProjectionImmortalOmniA")) {
                 isVaulted = false;
             }
-
             relic.isVaulted = isVaulted;
         });
 
@@ -367,13 +337,14 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
     }
 }
 
-// --- MAIN ---
+// --- MAIN CONTROLLER ---
 export async function syncRelics() {
     const client = await clientPromise;
     const db = client.db();
 
-    const masterMap = await buildRelicMap();
-    await translateRewards(masterMap);
+    const masterMap = new Map<string, RelicDoc>();
+
+    await processAllLanguages(masterMap);
     await applyVaultStatus(masterMap);
 
     const finalDocs = Array.from(masterMap.values());
