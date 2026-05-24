@@ -1,8 +1,5 @@
 import clientPromise from "@/app/lib/mongodb";
 import Items from "@wfcd/items";
-import { decompress } from "lzma";
-import https from "https";
-import http from "http";
 
 // --- TYPES & INTERFACES ---
 
@@ -70,116 +67,34 @@ const LANGUAGES = [
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // --- UTILS ---
-const decompressAsync = (buffer: Buffer): Promise<string> => {
-    return new Promise((resolve, reject) => {
-        decompress(buffer, (result, err) => {
-            if (err) return reject(err);
-            if (!result) return reject(new Error("Decompression failed"));
-            resolve(Buffer.from(result as Uint8Array).toString("utf-8"));
-        });
-    });
+
+const getMirrorLangCode = (lang: string): string => {
+    if (lang === "zh") return "zh-Hans";
+    if (lang === "tc") return "zh-Hant";
+    return lang;
 };
 
-function fetchBufferNative(url: string): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-        const client = url.startsWith("https") ? https : http;
-        const options = {
-            headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                Accept: "*/*",
-            },
-        };
-        client
-            .get(url, options, (res) => {
-                if (
-                    res.statusCode &&
-                    res.statusCode >= 300 &&
-                    res.statusCode < 400 &&
-                    res.headers.location
-                ) {
-                    return resolve(fetchBufferNative(res.headers.location));
-                }
-                if (res.statusCode !== 200) {
-                    return reject(
-                        new Error(
-                            `Failed to fetch ${url}: Status ${res.statusCode}`,
-                        ),
-                    );
-                }
-                const chunks: Buffer[] = [];
-                res.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
-                res.on("end", () => resolve(Buffer.concat(chunks)));
-                res.on("error", (err) => reject(err));
-            })
-            .on("error", (err) => reject(err));
-    });
-}
+// --- PHASE 1 & 2: RELIC AGGREGATION ---
+async function buildRelicMap(): Promise<Map<string, RelicDoc>> {
+    const masterMap = new Map<string, RelicDoc>();
 
-function fetchTextNative(url: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const client = url.startsWith("https") ? https : http;
-        const options = {
-            headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                Accept: "*/*",
-            },
-        };
-        client
-            .get(url, options, (res) => {
-                if (res.statusCode !== 200) {
-                    return reject(
-                        new Error(
-                            `Failed to fetch ${url}: Status ${res.statusCode}`,
-                        ),
-                    );
-                }
-                let data = "";
-                res.on("data", (chunk) => (data += chunk));
-                res.on("end", () => resolve(data));
-                res.on("error", (err) => reject(err));
-            })
-            .on("error", (err) => reject(err));
-    });
-}
-
-// --- PIPELINE COMPILATION ---
-async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
     for (const lang of LANGUAGES) {
-        console.log(
-            `📡 Processing Master Sync & Translation for [${lang.toUpperCase()}]...`,
-        );
+        console.log(`📡 Phase 1/2: Fetching Relics [${lang.toUpperCase()}]...`);
         try {
-            await sleep(2500);
+            const targetLang = getMirrorLangCode(lang);
 
-            const compressedIndex = await fetchBufferNative(
-                `https://origin.warframe.com/PublicExport/index_${lang}.txt.lzma`,
-            );
-            const decompressedIndex = await decompressAsync(compressedIndex);
-            const lines = decompressedIndex.split(/\r?\n/);
+            await sleep(2000);
 
-            const relicLine = lines.find((line) =>
-                line.includes("ExportRelicArcane"),
-            );
-            if (!relicLine) throw new Error(`Relic manifest missing in index`);
-
-            await sleep(500);
-            const rawRelicText = await fetchTextNative(
-                `http://content.warframe.com/PublicExport/Manifest/${relicLine}`,
-            );
-            const cleanedRelicText = rawRelicText.trim().startsWith("{")
-                ? rawRelicText.trim()
-                : `{${rawRelicText.trim()}}`;
-            const relicData = JSON.parse(cleanedRelicText) as {
-                ExportRelicArcane: RawRelicItem[];
-            };
-
-            const rawItems = relicData.ExportRelicArcane.filter(
-                (i) => i.relicRewards,
+            const response = await fetch(
+                `https://vivern.github.io/warframe-public-export-mirror/data/${targetLang}/ExportRelicArcane.json`,
             );
 
-            for (const item of rawItems) {
+            if (!response.ok) throw new Error(`HTTP Status ${response.status}`);
+
+            const rawItems = (await response.json()) as RawRelicItem[];
+            const filteredItems = rawItems.filter((i) => i.relicRewards);
+
+            for (const item of filteredItems) {
                 const familyId = item.uniqueName.replace(
                     /(Bronze|Silver|Iron|Gold|Radiant|Platinum)$/i,
                     "",
@@ -203,6 +118,7 @@ async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
                 }
 
                 const entry = masterMap.get(familyId)!;
+
                 if (!entry.i18n[lang]) {
                     entry.i18n[lang] = { displayName: item.name };
                 }
@@ -221,7 +137,22 @@ async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
                     }
                 });
             }
+        } catch (e) {
+            const err = e as Error;
+            console.error(`Error in ${lang}: ${err.message}`);
+        }
+    }
+    return masterMap;
+}
 
+// --- PHASE 3: TRANSLATE REWARDS ---
+async function translateRewards(masterMap: Map<string, RelicDoc>) {
+    console.log("\n📡 Phase 3: Multi-Manifest Translation...");
+
+    for (const lang of LANGUAGES) {
+        console.log(`   Building dictionary for [${lang.toUpperCase()}]...`);
+        try {
+            const targetLang = getMirrorLangCode(lang);
             const targetManifests = [
                 "ExportWarframes",
                 "ExportWeapons",
@@ -233,20 +164,14 @@ async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
             const resultMap = new Map<string, string>();
 
             for (const target of targetManifests) {
-                const line = lines.find((l) => l.includes(target));
-                if (!line) continue;
+                await sleep(2000);
 
-                await sleep(500); // Small breaker inside language manifest downloads
-                const rawText = await fetchTextNative(
-                    `http://content.warframe.com/PublicExport/Manifest/${line}`,
+                const res = await fetch(
+                    `https://vivern.github.io/warframe-public-export-mirror/data/${targetLang}/${target}.json`,
                 );
-                const json = JSON.parse(
-                    rawText
-                        .trim()
-                        .replace(/^[^{]*/, "")
-                        .replace(/[^}]*$/, ""),
-                ) as Record<string, RawManifestItem[]>;
-                const dataArray = json[target] || [];
+                if (!res.ok) continue;
+
+                const dataArray = (await res.json()) as RawManifestItem[];
 
                 dataArray.forEach((item) => {
                     if (item.uniqueName && item.name)
@@ -275,12 +200,14 @@ async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
                     if (resultPath) {
                         finalName = itemMap.get(resultPath) || "";
                     }
+
                     if (!finalName) {
                         finalName =
                             itemMap.get(normalizedPath) ||
                             itemMap.get(rawPath) ||
                             "";
                     }
+
                     if (finalName) {
                         reward.i18n[lang] = finalName;
                     }
@@ -288,9 +215,7 @@ async function processAllLanguages(masterMap: Map<string, RelicDoc>) {
             });
         } catch (e) {
             const err = e as Error;
-            console.error(
-                `❌ Error processing language [${lang.toUpperCase()}]: ${err.message}`,
-            );
+            console.warn(`   ❌ Error: ${err.message}`);
         }
     }
 }
@@ -319,9 +244,11 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
 
         masterMap.forEach((relic) => {
             let isVaulted = vaultMap.get(relic.uniqueId) || false;
+
             if (relic.uniqueId.includes("T5VoidProjectionImmortalOmniA")) {
                 isVaulted = false;
             }
+
             relic.isVaulted = isVaulted;
         });
 
@@ -337,14 +264,13 @@ async function applyVaultStatus(masterMap: Map<string, RelicDoc>) {
     }
 }
 
-// --- MAIN CONTROLLER ---
+// --- MAIN ---
 export async function syncRelics() {
     const client = await clientPromise;
     const db = client.db();
 
-    const masterMap = new Map<string, RelicDoc>();
-
-    await processAllLanguages(masterMap);
+    const masterMap = await buildRelicMap();
+    await translateRewards(masterMap);
     await applyVaultStatus(masterMap);
 
     const finalDocs = Array.from(masterMap.values());
