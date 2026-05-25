@@ -58,11 +58,6 @@ const LANGUAGES = [
 ];
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const FETCH_HEADERS = {
-    "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-};
-
 // --- UTILS ---
 const decompressAsync = (buffer: Buffer): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -74,10 +69,9 @@ const decompressAsync = (buffer: Buffer): Promise<string> => {
     });
 };
 
-// Added sleep here to ensure no over-fetching
 const secureFetch = async (url: string) => {
     await sleep(2000);
-    const res = await fetch(url, { headers: FETCH_HEADERS });
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res;
 };
